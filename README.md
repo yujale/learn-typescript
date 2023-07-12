@@ -158,3 +158,160 @@ console.log(obj); // { name: 'Jerry' }
 let u: undefined = undefined;
 let n: null = null;
 ```
+
+### 4.9 any 类型
+
+在某些情况下，我们确实无法确定一个变量的类型，并且可能它会发生一些变化，这个时候我们可以使用any类型(类似于Dart 语言中的dynamic类型)。
+any类型有点像一种讨巧的TypeScript手段:
+- 我们可以对any类型的变量进行任何的操作，包括获取不存在的属性、方法;
+- 我们给一个any类型的变量赋值任何的值，比如数字、字符串的值;
+
+如果对于某些情况的处理过于繁琐不希望添加规定的类型注解，或者在引入一些第三方库时，缺失了类型注解，这个时候我们可 以使用any:
+
+```ts
+let any: any = 123;
+any = 'abc';
+any = true;
+any = null;
+any = undefined;
+any = {};
+any = [];
+```
+
+### 4.10 unknown类型
+unknown是TypeScript中比较特殊的一种类型，它用于描述类型不确定的变量。
+- 和any类型有点类似，但是unknown类型的值上做任何事情都是不合法的;
+
+```ts
+let value: unknown;
+value = 123;
+value = 'abc';
+value.length; // 报错
+```
+
+### 4.11 void类型
+void通常用来指定一个函数是没有返回值的，那么它的返回值就是void类型:
+```ts
+function fn() {
+    console.log('fn()');
+}
+```
+
+这个函数我们没有写任何类型，那么它默认返回值的类型就是void的，我们也可以显示的来指定返回值是void:
+```ts
+function fn(): void {
+    console.log('fn()');
+}
+```
+我们可以将undefined赋值给void类型，也就是函数可以返回undefined
+
+
+当基于上下文的类型推导(Contextual Typing)推导出返回类型为 void 的时候，并不会强制函数一定不能返回内容。
+```ts
+type FnType =  ()=> void
+const foo: FnType = () => {
+    return 123
+}
+
+```
+
+### 4.12 never类型
+
+never 表示永远不会发生值的类型，比如一个函数:
+- 如果一个函数中是一个死循环或者抛出一个异常，那么这个函数会返回东西吗?
+- 不会，那么写void类型或者其他类型作为返回值类型都不合适，我们就可以使用never类型;
+```ts
+function loopFun(): never {
+    while (true) {
+        console.log('loopFun');
+    }
+}
+
+function errorFun(): never {
+    throw new Error('errorFun');
+}
+```
+
+```ts
+function handleMessage(message: string | number) {
+    if (typeof message === 'string') {
+        console.log('string');
+    } else if (typeof message === 'number') {
+        console.log('number');
+    } else {
+        // never
+        const check: never = message;
+    }
+}
+```
+
+### 4.13 tuple类型
+
+tuple是元组类型，很多语言中也有这种数据类型，比如Python、Swift等。
+- 元组类型可以用来表示一个已知元素数量和类型的数组，各元素的类型不必相同，比如我们可以定义一个元组类型表示一个数字和一个字符串:
+```ts
+let tuple: [number, string] = [1, 'a'];
+const num = tuple[0]; // 1 ,已知类型为number
+const ss = tuple[1]; // 'a' ,已知类型为string
+```
+
+tuple和数组有什么区别呢?
+- 首先，数组中通常建议存放相同类型的元素，不同类型的元素是不推荐放在数组中。(可以放在对象或者元组中)
+- 其次，元组中每个元素都有自己特性的类型，根据索引值获取到的值可以确定对应的类型;
+- 最后，元组的长度是固定的，不可变的，不能添加或者删除元素，也不能修改元素的类型;
+  tuple通常可以作为返回的值，在使用的时候会非常的方便;
+```ts
+
+function useState<T> (initialState: T): [T, (state: T) => void] {
+    let state = initialState;
+    const setState = (newState: T) => {
+        state = newState;
+    }
+    return [state, setState];
+}
+const [state, setState] = useState<number>(1);
+```
+  
+
+## 5. TypeScript的函数
+
+### 5.1 函数的类型
+
+函数是JavaScript非常重要的组成部分，TypeScript允许我们指定函数的参数和返回值的类型。
+参数的类型注解
+- 声明函数时，可以在每个参数后添加类型注解，以声明函数接受的参数类型:
+```ts
+function sum(x: number, y: number): number {
+    return x + y;
+}
+
+sum(1, 2);
+```
+
+
+
+
+### 5.2 函数的返回值类型
+添加返回值的类型注解，这个注解出现在函数列表的后面:
+```ts
+function sum(x: number, y: number): number {
+    return x + y;
+}
+```
+
+和变量的类型注解一样，我们通常情况下不需要返回类型注解，因为TypeScript会根据 return 返回值推断函数的返回类型
+
+### 5.3 匿名函数的参数
+匿名函数与函数声明会有一些不同:
+
+- 当一个函数出现在TypeScript可以确定该函数会被如何调用的地方时;
+- 该函数的参数会自动指定类型;
+- 我们并没有指定item的类型，但是item是一个string类型:
+  - 这是因为TypeScript会根据forEach函数的类型以及数组的类型推断出item的类型;
+  - 这个过程称之为上下文类型(contextual typing)，因为函数执行的上下文可以帮助确定参数和返回值的类型;
+```ts
+const names= ['Tom', 'Jerry', 'Bob'];
+names.forEach(function(item) {
+    console.log(item.toUpperCase());
+});
+```
