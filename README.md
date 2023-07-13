@@ -466,3 +466,28 @@ names.forEach(function(item) {
     console.log(item.toUpperCase());
 });
 ```
+
+
+### 5.4 函数的参数类型和解析
+函数是重要的组成部分，并且函数可以作为一等公民(可以作为参数，也可以作为返回值进行传递)。
+编写函数类型的表达式(Function Type Expressions)，来表示函数类型;
+
+```ts
+
+type Calculate = (x: number, y: number) => number;
+
+function calc(fn:Calculate) {
+    return fn(1, 2);
+}
+function add(x: number, y: number) {
+    return x + y;
+}
+
+calc(add);
+```
+
+在上面的语法中 (x: number, y: number) => number，代表的就是一个函数类型:
+- 接收两个参数的函数:num1和num2，并且都是number类型;
+- 并且这个函数是有返回值的，所以是number;
+
+在某些语言中，可能参数名称num1和num2是可以省略，但是TypeScript是不可以的:
