@@ -272,6 +272,82 @@ function useState<T> (initialState: T): [T, (state: T) => void] {
 const [state, setState] = useState<number>(1);
 ```
   
+### 4.14 联合类型
+
+- 联合类型是由两个或者多个其他类型组成的类型;
+- 表示可以是这些类型中的任何一个值;
+- 联合类型中的每一个类型被称之为联合成员(union's members);
+
+```ts
+function printId(id: number | string) {
+    console.log(id);
+}
+
+printId(1);
+printId('abc');
+```
+
+传入给一个联合类型的值是非常简单的:只要保证是联合类型中的某一个类型的值即可
+TypeScript可以根据我们缩小的代码结构，推断出更加具体的类型;
+
+```ts
+function printId(id: number | string) {
+    if (typeof id === 'string') {
+        // id在这里是string类型
+        console.log(id.toUpperCase());
+    } else {
+        // id在这里是number类型
+        console.log(id);
+    }
+}
+```
+
+
+### 4.15 类型别名
+
+通过在类型注解中编写 对象类型 和 联合类型，但是当我们想要多次在其他地方使用时，就要编写多次。
+比如我们可以给对象类型起一个别名
+
+```ts
+type Point = {
+    x: number;
+    y: number;
+}
+function printPoint(point: Point) {
+    console.log(point.x, point.y);
+}
+
+printPoint({x: 1, y: 2});
+
+type ID = number | string;
+function printId(id: ID) {
+    console.log(id);
+}
+```
+
+#### interface和type区别
+如果是定义非对象类型，通常推荐使用type，比如Direction、Alignment、一些Function;
+如果是定义对象类型，那么他们是有区别的
+- interface 可以重复的对某个接口来定义属性和方法;
+-  而type定义的是别名，别名是不能重复的;
+- interface可以为现有的接口提供更多的扩展。
+
+### 4.16 交叉类型
+
+- 交叉类似表示需要满足多个类型的条件;
+- 交叉类型使用 & 符号;
+
+```ts
+type First = { first: number };
+type Second = { second: number };
+type FirstAndSecond = First & Second;  
+// FirstAndSecond的类型是 { first: number, second: number }
+```
+表达的含义是First和Second要同时满足;
+
+
+### 4.17 类型断言 as
+
 
 ## 5. TypeScript的函数
 
