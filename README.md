@@ -424,7 +424,6 @@ function redirect(usr: Admin | User) {
 ```
 
 
-
 ## 5. TypeScript的函数
 
 ### 5.1 函数的类型
