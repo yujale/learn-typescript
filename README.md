@@ -528,3 +528,35 @@ function fn(ctor: SomeConstructor) {
 
 ### 5.7 函数的默认参数
 
+
+从ES6开始，JavaScript是支持默认参数的，TypeScript也是支持默认参数的:
+
+
+```ts
+function add(x: number, y: number = 0): number {
+    return x + y;
+}
+```
+这个时候y的类型其实是 undefined 和 number 类型的联合。
+
+### 5.8 函数的可选参数
+可以指定某个参数是可选的:
+
+```ts
+
+function add(x: number, y?: number): number {
+    return x + y;
+}
+```
+这个时候这个参数y依然是有类型的，它是什么类型呢? number | undefined
+可选类型需要在必传参数的后面
+
+### 5.9 函数的剩余参数
+从ES6开始，JavaScript也支持剩余参数，剩余参数语法允许我们将一个不定数量的参数放到一个数组中。
+
+```ts
+
+function add(x: number, ...rest: number[]): number {
+    return x + rest.reduce((pre, cur) => pre + cur, 0);
+}
+```
