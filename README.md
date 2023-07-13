@@ -490,4 +490,41 @@ calc(add);
 - 接收两个参数的函数:num1和num2，并且都是number类型;
 - 并且这个函数是有返回值的，所以是number;
 
-在某些语言中，可能参数名称num1和num2是可以省略，但是TypeScript是不可以的:
+在某些语言中，可能参数名称num1和num2是可以省略，但是TypeScript是不可以的
+
+### 5.5 函数的调用签名
+函数除了可以被调用，自己也是可以有属性值的。
+函数类型表达式并不能支持声明属性
+在一个对象类型中写一个调用签名(call signature);
+
+```ts
+type DescribableFunction = {
+    description: string;
+    (someArg: number): boolean;
+};
+
+function doSomething(fn: DescribableFunction) {
+    console.log(fn.description + " returned " + fn(6));
+}
+```
+
+注意这个语法跟函数类型表达式稍有不同，在参数列表和返回的类型之间用的是 : 而不是 =>。
+
+### 5.6 函数的构造签名
+JavaScript 函数也可以使用 new 操作符调用，当被调用的时候，TypeScript 会认为这是一个构造函数(constructors)，因为 他们会产生一个新对象。
+可以写一个构造签名( Construct Signatures )，方法是在调用签名前面加一个 new 关键词;
+
+```ts
+
+type SomeConstructor = {
+    new (s: string): SomeObject;
+};
+
+function fn(ctor: SomeConstructor) {
+    return new ctor("hello");
+}
+```
+
+
+### 5.7 函数的默认参数
+
