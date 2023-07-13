@@ -560,3 +560,46 @@ function add(x: number, ...rest: number[]): number {
     return x + rest.reduce((pre, cur) => pre + cur, 0);
 }
 ```
+
+### 5.10 函数的重载
+在TypeScript中，我们可以去编写不同的重载签名(overload signatures)来表示函数可以以不同的方式进行调用; 
+一般是编写两个或者以上的重载签名，再去编写一个通用的函数以及实现;
+
+```ts
+function add(...rest: number[]): number;
+function add(...rest: string[]): string;
+function add(...rest: any[]): any {
+    let first = rest[0];
+    if (typeof first === "string") {
+        return rest.join("");
+    }
+    if (typeof first === "number") {
+        return rest.reduce((pre, cur) => pre + cur, 0);
+    }
+}
+```
+
+### 5.11 函数的this参数
+在JavaScript中，this是一个非常重要的概念，它代表函数执行的上下文。
+在TypeScript中，我们可以使用this参数来指定函数执行的上下文，this参数是一个假的参数，它出现在参数列表的最前面:
+
+```ts
+function fn(this: Window) {
+    console.log(this);
+}
+```
+
+指定 this 类型
+
+- 函数的第一个参数我们可以根据该函数之后被调用的情况，用于声明this的类型(名词必须叫this); 
+- 在后续调用函数传入参数时，从第二个参数开始传递的，this参数会在编译后被抹除;
+
+```ts
+function fn(this: Window, x: number) {
+    console.log(this);
+}
+fn(1);
+```
+
+
+
