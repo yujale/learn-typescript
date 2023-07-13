@@ -347,6 +347,82 @@ type FirstAndSecond = First & Second;
 
 
 ### 4.17 类型断言 as
+TypeScript只允许类型断言转换为 更具体 或者 不太具体 的类型版本，此规则可防止不可能的强制转换:
+
+###  4.18 非空类型断言!
+
+我们确定传入的参数是有值的，这个时候我们可以使用非空类型断言:
+非空断言使用的是 ! ，表示可以确定某个标识符是有值的，跳过ts在编译阶段对它的检测;
+
+```ts
+function printId(id?:  string | undefined) {
+    console.log(id!.toUpperCase());
+}
+```
+
+### 4.19 类型缩小
+- 类型缩小的英文是 Type Narrowing
+- 可以通过类似于 typeof padding === "number" 的判断语句，来改变TypeScript的执行路径;
+- 在给定的执行路径中，我们可以缩小比声明时更小的类型，这个过程称之为 缩小( Narrowing );
+- 我们编写的 typeof padding === "number 可以称之为 类型保护(type guards);
+
+#### typeof类型保护
+
+检查返回的值typeof是一种类型保护:
+因为 TypeScript 对如何typeof操作不同的值进行编码。
+```ts
+function printAll(strs: string | string[] | null) {
+    if (typeof strs === "object") {
+        for (const s of strs) {
+            console.log(s);
+        }
+    } else if (typeof strs === "string") {
+        console.log(strs);
+    } else {
+        // do nothing
+    }
+}
+
+```
+
+####  instanceof类型保护
+JavaScript 有一个运算符来检查一个值是否是另一个值的“实例”:
+
+```ts
+function printValue(date:Date | string) {
+    if (date instanceof Date) {
+        console.log(date.toUTCString());
+    } else {
+        console.log(date.toUpperCase());
+    }
+}
+```
+
+#### in类型保护
+
+in 操作符可以用来检查一个对象中是否含有某个属性，即使这个属性不是对象的实例属性:
+
+```ts
+interface Admin {
+    id: string;
+    role: string;
+}
+
+interface User {
+    email: string;
+}
+
+function redirect(usr: Admin | User) {
+    if ("role" in usr) {
+        // usr: Admin
+        routeToAdminPage(usr.role);
+    } else {
+        // usr: User
+        routeToHomePage(usr.email);
+    }
+}
+```
+
 
 
 ## 5. TypeScript的函数
