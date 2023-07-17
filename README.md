@@ -424,6 +424,47 @@ function redirect(usr: Admin | User) {
 ```
 
 
+### 4.20 枚举类型
+
+
+枚举类型是为数不多的TypeScript特性有的特性之一:
+- 枚举类型是对JavaScript标准数据类型的一个补充;
+- 枚举类型可以让我们定义一些有名字的数字常量;
+- 枚举类型使用 enum 关键字来定义;
+- 枚举类型中的每个值都可以叫做枚举成员;
+- 枚举成员有两种类型: 常数枚举成员和计算枚举成员;
+- 枚举成员的值是只读的，不可修改;
+- 枚举允许开发者定义一组命名常量，常量可以是数字、字符串类型;
+
+```ts
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+console.log(Direction.Up); // 0
+console.log(Direction.Down); // 1
+console.log(Direction.Left); // 2
+console.log(Direction.Right); // 3
+```
+
+```ts
+enum Direction {
+    Up = 10,
+    Down = 20,
+    Left = 30,
+    Right = 40,
+}
+
+console.log(Direction.Up); // 10
+console.log(Direction.Down); // 20
+console.log(Direction.Left); // 30
+console.log(Direction.Right); // 40
+```
+
+
 ## 5. TypeScript的函数
 
 ### 5.1 函数的类型
@@ -601,5 +642,250 @@ function fn(this: Window, x: number) {
 fn(1);
 ```
 
+
+## 6.TypeScript面向对象
+
+### 6.1 类的定义
+使用class关键字来定义一个类;
+我们可以声明类的属性:在类的内部声明类的属性以及对应的类型
+
+如果类型没有声明，那么它们默认是any的;
+我们也可以给属性设置初始化值;
+
+在默认的strictPropertyInitialization模式下面我们的属性是必须 初始化的，如果没有初始化，那么编译时就会报错;
+如果我们在strictPropertyInitialization模式下确实不希望给属 性初始化，可以使用 name!: string语法;
+类可以有自己的构造函数constructor，当我们通过new关键字创建 一个实例时，构造函数会被调用;
+构造函数不需要返回任何值，默认返回当前创建出来的实例;
+类中可以有自己的函数，定义的函数称之为方法
+
+```ts
+class Person {
+    name!: string;
+    age: number;
+    constructor(name: string, age: number) {
+        this.name = name;
+        this.age = age;
+    }
+    sayHi(msg: string): void {
+        console.log(`I am ${this.name}, ${msg}`);
+    }
+}
+```
+
+### 6.2 类的继承
+
+
+面向对象的其中一大特性就是继承，继承不仅仅可以减少我们的代码量，也是多态的使用前提。
+
+在TypeScript中，我们可以使用extends关键字来实现继承，子类中可以调用父类中的构造函数，也可以调用父类中的方法。
+
+-  Student类可以有自己的属性和方法，并且会继承Person的属性和方法
+
+- 在构造函数中，我们可以通过super来调用父类的构造方法，对父类中的属性进行初始化;
+
+- 在子类中可以重写父类的方法，重写之后父类中的方法就不会被执行了;
+
+- 在子类中可以使用super来调用父类中的方法;
+
+```ts
+class Student extends Person {
+    sno: number;
+    constructor(name: string, age: number, sno: number) {
+        super(name, age);
+        this.sno = sno;
+    }
+    sayHi() {
+        super.sayHi("I am a student");
+    }
+}
+```
+
+
+
+
+
+### 6.3 类的修饰符
+
+在TypeScript中，我们可以给类中的属性和方法添加修饰符，来控制成员的访问权限;
+
+- public: 公开的，默认的修饰符，公开的属性和方法可以在任意地方被访问到，默认所有的属性和方法都是公开的;
+- private: 私有的，私有的属性和方法不能在声明它的类的外部访问;
+- protected: 受保护的，受保护的属性和方法只能在声明它的类或者子类中访问;
+- readonly: 只读的，只读属性只能读取不能修改;
+- static: 静态的，静态属性和方法只能通过类名来访问，不能通过实例来访问;
+
+### 6.4 getters/setters
+
+一些私有属性我们是不能直接访问的，或者某些属性我们想要监听它的获取(getter)和设置(setter)的过程，这个时候我们 可以使用存取器。
+
+存取器需要使用get和set关键字来进行修饰，get和set关键字是 TypeScript中提供的一种属性访问器;
+
+```ts
+class Person {
+    private _name: string;
+    constructor(name: string) {
+        this._name = name;
+    }
+    get name() {
+        return this._name;
+    }
+    set name(name: string) {
+        this._name = name;
+    }
+}
+```
+### 6.5 参数属性(Parameter Properties)
+
+在TypeScript中，我们可以在构造函数中使用参数属性，通过给构造函数中的参数添加修饰符来声明参数属性;
+
+```ts
+class Person {
+    constructor(public name: string) {
+    }
+    set name(name: string) {
+        this._name = name;
+    }
+}
+```
+
+### 6.6 抽象类
+
+在TypeScript中，我们可以使用abstract关键字来定义抽象类和抽象方法，抽象类是不允许被实例化的，只能被子类继承;
+
+抽象类中的抽象方法必须被子类实现;
+
+- 抽象类和抽象方法用来定义标准，标准:Animal这个类要求它的子类必须包含eat方法;
+- 抽象类不允许被实例化;
+- 抽象方法只能被子类实现;
+- 抽象类的子类必须实现抽象类中的所有抽象方法;
+- 抽象方法，必须存在于抽象类中;
+- 抽象方法，不能包含具体的实现，也就是抽象方法不能有方法体;
+
+```ts
+
+abstract class Animal {
+    abstract eat(): any;
+}
+
+class Cat extends Animal {
+    eat() {
+        console.log("吃老鼠");
+    }
+}
+
+
+```
+
+
+### 6.7 类的类型
+
+在TypeScript中，我们可以使用接口来描述类的类型;
+
+
+```ts
+class Person {
+    name: string;
+    age: number;
+    constructor(name: string, age: number) {
+        this.name = name;
+        this.age = age;
+    }
+    sayHi(msg: string): void {
+        console.log(`I am ${this.name}, ${msg}`);
+    }
+    run(): void {
+        console.log("I am running");
+    }
+}
+
+const p: Person = new Person("laoxie", 18);
+const p1 : Person = {
+    name: "laoxie",
+    age: 18,
+  run: function () {
+    console.log("I am running");
+  },
+}
+```
+
+### 6.8 对象类型的属性修饰符
+
+
+
+对象类型中的每个属性可以说明它的类型、属性是否可选、属性是否只读等信息。
+
+- ?: 可选属性，表示该属性可以不存在;
+- readonly: 只读属性，表示该属性不能被修改;
+
+```ts
+
+interface Person {
+    readonly id: number;
+    name: string;
+    age?: number;
+}
+
+const p: Person = {
+    id: 1,
+    name: "laoxie",
+    age: 18
+}
+
+```
+
+
+  
+### 6.9 接口的继承
+
+接口和类一样是可以进行继承的，也是使用extends关键字:
+接口是支持多继承的(类不支持多继承)
+
+
+
+```ts
+interface Animal {
+    eat(): void;
+}
+
+interface Person{
+    work(): void;
+}
+
+class Student implements Person,Animal {
+    name: string;
+    constructor(name: string) {
+        this.name = name;
+    }
+    eat() {
+        console.log("吃饭");
+    }
+    work() {
+        console.log("工作");
+    }
+}
+
+```
+
+### 6.10 接口实现
+
+
+接口定义后，也是可以被类实现的:
+
+如果被一个类实现，那么在之后需要传入接口的地方，都可以将这个类传入;
+
+
+
+```ts
+interface Animal {
+    eat(): void;
+}
+
+class Cat implements Animal {
+    eat() {
+        console.log("吃老鼠");
+    }
+}
+
+```
 
 
